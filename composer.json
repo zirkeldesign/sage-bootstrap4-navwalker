@@ -1,5 +1,5 @@
 {
-  "name": "zirkeldesign/sage-bootstrap4-navwalker",
+  "name": "zirkeldesign/zd-wp-sage-bootstrap4-navwalker",
   "description": "Bootstrap 4 Navbar component navwalker for Sage 9 based themes",
   "keywords": [
     "wordpress",
@@ -8,7 +8,7 @@
     "navbar",
     "sage"
   ],
-  "homepage": "https://github.com/zirkeldesign/sage-bootstrap4-navwalker",
+  "homepage": "https://github.com/zirkeldesign/zd-wp-sage-bootstrap4-navwalker",
   "license": "MIT",
   "authors": [
     {
