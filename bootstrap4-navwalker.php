@@ -9,7 +9,7 @@ namespace App;
 
 /**
  * Class Name: wp_bootstrap4_navwalker
- * GitHub URI: https://github.com/zirkeldesign/sage-bootstrap4-navwalker
+ * GitHub URI: https://github.com/zirkeldesign/zd-wp-sage-bootstrap4-navwalker
  * Description: A custom WordPress nav walker class to implement the Bootstrap 3 navigation style in a custom theme using the WordPress built in menu manager.
  * Version: 2.0.4
  * Author: Edward McIntyre - @twittem
