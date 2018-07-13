@@ -2,17 +2,11 @@
 namespace App;
 
 /**
- * Bootstrap 4 "Navbar" component navwalker drop-in functionality for Sage 9
- * Version: 1.0
- * Author: Michael W. Delaney, Daniel Sturm
- */
-
-/**
- * Class Name: wp_bootstrap4_navwalker
+ * Class Name: Walker_Nav_Menu_BS4
  * GitHub URI: https://github.com/zirkeldesign/zd-wp-sage-bootstrap4-navwalker
- * Description: A custom WordPress nav walker class to implement the Bootstrap 3 navigation style in a custom theme using the WordPress built in menu manager.
- * Version: 2.0.4
- * Author: Edward McIntyre - @twittem
+ * Description: A custom WordPress nav walker class to implement the Bootstrap 4 navigation style in a custom theme using the WordPress built in menu manager.
+ * Version: 1.3.0
+ * Author: Daniel Sturm @dsturm
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
@@ -26,7 +20,6 @@ if (class_exists('\Walker_Nav_Menu')) {
  */
 class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 {
-
 	/**
 	 * @see Walker::start_lvl()
 	 * @since 3.0.0
@@ -36,9 +29,10 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 	 */
 	public function start_lvl(&$output, $depth = 0, $args = array())
 	{
-		$indent = str_repeat("\t", $depth);
-		$output .= "\n$indent<div role=\"menu\" class=\" dropdown-menu\">\n";
+		$indent  = str_repeat("\t", $depth);
+		$output .= PHP_EOL . "$indent<div role=\"menu\" class=\" dropdown-menu\">" . PHP_EOL;
 	}
+
 	/**
 	 * Ends the list of after the elements are added.
 	 *
@@ -53,8 +47,9 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 	public function end_lvl(&$output, $depth = 0, $args = array())
 	{
 		$indent = str_repeat("\t", $depth);
-		$output .= "$indent</div>\n";
+		$output .= "$indent</div>" . PHP_EOL;
 	}
+
 	/**
 	 * Start the element output.
 	 *
@@ -73,13 +68,14 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 		if ($depth === 1) {
 			if (strcasecmp($item->attr_title, 'divider') == 0 || strcasecmp($item->title, 'divider') == 0) {
 				$output .= '</div>';
-			} elseif ($depth === 1 && (strcasecmp($item->attr_title, 'header') == 0 && $depth === 1)) {
+			} elseif (strcasecmp($item->attr_title, 'header')) {
 				$output .= '</h6>';
 			}
 		} else {
 			$output .= '</li>';
 		}
 	}
+
 	/**
 	 * @see Walker::start_el()
 	 * @since 3.0.0
@@ -107,7 +103,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 			&& (strcasecmp($item->attr_title, 'divider') == 0 || strcasecmp($item->title, 'divider') == 0)
 		) {
 			$output .= $indent . '<div class="dropdown-divider">';
-		} elseif ((strcasecmp($item->attr_title, 'header') == 0 && $depth === 1)
+		} elseif ((strcasecmp($item->attr_title, 'header') == 0)
 			&& $depth === 1
 		) {
 			$output .= $indent . '<h6 class="dropdown-header">' . esc_attr($item->title);
@@ -125,6 +121,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 			if (in_array('current-menu-item', $classes)) {
 				$classes[] = ' active';
 			}
+
 			if ($depth === 0) {
 				$classes[] = 'nav-item';
 				$classes[] = 'nav-item-' . $item->ID;
@@ -175,6 +172,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 			$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
 		}
 	}
+
 	/**
 	 * Traverse elements to create list from elements.
 	 *
@@ -207,6 +205,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 		}
 		parent::display_element($element, $children_elements, $max_depth, $depth, $args, $output);
 	}
+
 	/**
 	 * Menu Fallback
 	 * =============
@@ -241,7 +240,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 				$fb_output .= ' class="' . $menu_class . '"';
 			}
 			$fb_output .= '>';
-			$fb_output .= '<li><a href="' . admin_url('nav-menus.php') . '">Add a menu</a></li>';
+			$fb_output .= '<li><a href="' . admin_url('nav-menus.php') . '">' . __('Add a menu'). '</a></li>';
 			$fb_output .= '</ul>';
 			if ($container) {
 				$fb_output .= '</' . $container . '>';
