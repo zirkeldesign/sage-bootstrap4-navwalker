@@ -118,10 +118,6 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 			$atts['href']   = ! empty($item->url) ? $item->url : '';
 			$id = apply_filters('nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args);
 
-			if (in_array('current-menu-item', $classes)) {
-				$classes[] = ' active';
-			}
-
 			if ($depth === 0) {
 				$classes[] = 'nav-item';
 				$classes[] = 'nav-item-' . $item->ID;
@@ -145,16 +141,32 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 				$atts['id'] = $id;
 			}
 
-			$atts = apply_filters('nav_menu_link_attributes', $atts, $item, $args);
+			if ( in_array( 'current-menu-item', $classes) ) {
+				$atts['class'] = trim(($atts['class'] ?? '') . ' active');
+			}
+
+			$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );
 			$attributes = '';
-			foreach ($atts as $attr => $value) {
-				if (! empty($value)) {
-					$value = ('href' === $attr) ? esc_url($value) : esc_attr($value);
+			foreach ( $atts as $attr => $value ) {
+				if ( ! empty( $value ) ) {
+					$value = ( 'href' === $attr ) ? esc_url( $value ) : esc_attr( $value );
 					$attributes .= ' ' . $attr . '="' . $value . '"';
 				}
 			}
-			$item_output = $args->before;
-			$item_output .= '<a'. $attributes .'>';
+
+			$classes = array_unique( $classes );
+			$classes = explode(
+				' ',
+				preg_replace(
+					'!\b((menu|nav)-item-\S+|(current[_-])?(page|menu)[_-]item(-\d+)?)\b!i',
+					'',
+					implode( ' ', $classes )
+				)
+			);
+			$classes = array_filter( $classes );
+
+			$item_output  = $args->before;
+			$item_output .= '<a' . $attributes . '>';
 
 			/**
 			 * Icons
@@ -169,6 +181,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 			$item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
 			$item_output .= '</a>';
 			$item_output .= $args->after;
+
 			$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
 		}
 	}
