@@ -4,7 +4,7 @@ Sets up a Bootstrap 4 Navwalker for Sage 9-based themes.
 
 To install, run the following in your Sage9-based theme directory:
 ```bash
-composer require "zirkeldesign/zd-wp-sage-bootstrap4-navwalker"
+composer require "zirkeldesign/zd-wp-sage-bootstrap4-nav-walker"
 ```
 
 Include the navwalker in your `wp_nav_menu` function:
@@ -20,7 +20,7 @@ public function primarymenu() {
   $args = array(
     'theme_location'    => 'primary_navigation',
     ...
-    'walker'            => new wp_bootstrap4_navwalker()
+    'walker'            => new \Zirkeldesign\Bootstrap4NavWalker\Walker_Nav_Menu()
   );
   return $args;
 }
@@ -34,10 +34,10 @@ In your Blade file, probably `header.blade.php`
 ```
 
 ## Without Controller
-If you're not setting up your template data with Controller, you'll need to fully reference the `\App\wp_bootstrap4_navwalker()`.
+If you're not setting up your template data with Controller, you'll need to fully reference the `\Zirkeldesign\Bootstrap4NavWalker\Walker_Nav_Menu()`.
 In your Blade file, probably `header.blade.php`
 ```php
 @if (has_nav_menu('primary_navigation'))
-  {!! wp_nav_menu(['theme_location' => 'primary_navigation', 'walker' => new \App\wp_bootstrap4_navwalker()]) !!}
+  {!! wp_nav_menu(['theme_location' => 'primary_navigation', 'walker' => new \Zirkeldesign\Bootstrap4NavWalker\Walker_Nav_Menu()]) !!}
 @endif
 ```
