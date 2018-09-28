@@ -1,11 +1,11 @@
 <?php
-namespace App;
+namespace Zirkeldesign\Bootstrap4NavWalker;
 
 /**
  * Class Name: Walker_Nav_Menu_BS4
  * GitHub URI: https://github.com/zirkeldesign/zd-wp-sage-bootstrap4-navwalker
  * Description: A custom WordPress nav walker class to implement the Bootstrap 4 navigation style in a custom theme using the WordPress built in menu manager.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Daniel Sturm @dsturm
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -16,9 +16,9 @@ if (class_exists('\Walker_Nav_Menu')) {
 }
 
 /**
- * Class: wp_bootstrap4_navwalker
+ * Class: Walker_Nav_Menu
  */
-class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
+class Walker_Nav_Menu extends \Walker_Nav_Menu
 {
 	/**
 	 * @see Walker::start_lvl()
@@ -164,7 +164,7 @@ class wp_bootstrap4_navwalker extends \Walker_Nav_Menu
 					implode( ' ', $classes )
 				)
 			);
-			$classes = array_filter( $classes );
+			$classes = array_unique( array_filter( $classes ) );
 
 			$item_output  = $args->before;
 			$item_output .= '<a' . $attributes . '>';

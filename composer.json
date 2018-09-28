@@ -1,5 +1,5 @@
 {
-  "name": "zirkeldesign/zd-wp-sage-bootstrap4-navwalker",
+  "name": "zirkeldesign/bootstrap4-navwalker",
   "description": "Bootstrap 4 Navbar component navwalker for Sage 9 based themes",
   "keywords": [
     "wordpress",
@@ -21,7 +21,7 @@
     }
   ],
   "require": {
-    "php": ">=5.3.2"
+    "php": ">=5.6"
   },
   "autoload": {
     "files": [
