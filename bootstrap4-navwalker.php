@@ -66,9 +66,11 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 	public function end_el(&$output, $item, $depth = 0, $args = array())
 	{
 		if ($depth === 1) {
-			if (strcasecmp($item->attr_title, 'divider') == 0 || strcasecmp($item->title, 'divider') == 0) {
+			if (0 === strcasecmp($item->attr_title, 'divider')
+				|| 0 ===strcasecmp($item->title, 'divider')
+			) {
 				$output .= '</div>';
-			} elseif (strcasecmp($item->attr_title, 'header')) {
+			} elseif (false !== stripos($item->attr_title, 'header')) {
 				$output .= '</h6>';
 			}
 		} else {
@@ -100,29 +102,32 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 		//( strcasecmp($item->attr_title, 'disabled' ) == 0 )
 
 		if ($depth === 1
-			&& (strcasecmp($item->attr_title, 'divider') == 0 || strcasecmp($item->title, 'divider') == 0)
+			&& (
+				0 === strcasecmp($item->attr_title, 'divider')
+				|| 0 === strcasecmp($item->title, 'divider')
+			)
 		) {
 			$output .= $indent . '<div class="dropdown-divider">';
-		} elseif ((strcasecmp($item->attr_title, 'header') == 0)
-			&& $depth === 1
+		} elseif ($depth === 1
+			&& false !== stripos($item->attr_title, 'header')
 		) {
 			$output .= $indent . '<h6 class="dropdown-header">' . esc_attr($item->title);
 		} else {
 			$class_names = $value = '';
-			$classes = empty($item->classes) ? array() : (array) $item->classes;
+			$classes = empty($item->classes) ? [] : (array) $item->classes;
 
-			$atts = array();
+			$atts = [];
 			$atts['title']  = ! empty($item->title)	? $item->title : '';
 			$atts['target'] = ! empty($item->target) ? $item->target : '';
 			$atts['rel']    = ! empty($item->xfn) ? $item->xfn : '';
 			$atts['href']   = ! empty($item->url) ? $item->url : '';
 			$id = apply_filters('nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args);
 
-			if ($depth === 0) {
+			if ( $depth === 0 ) {
 				$classes[] = 'nav-item';
 				$classes[] = 'nav-item-' . $item->ID;
 				$atts['class'] = 'nav-link';
-				if ($args->has_children) {
+				if ( $args->has_children ) {
 					$classes[] = ' dropdown';
 					$atts['href']          = ! empty($item->url) ? $item->url : '';
 					$atts['data-hover']    = 'show';
@@ -131,18 +136,27 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 					$atts['role']          = 'button';
 					$atts['aria-haspopup'] = 'true';
 				}
-				$class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
+				$class_names = join(' ', apply_filters( 'nav_menu_css_class', array_filter($classes), $item, $args) );
+                if (false !== strpos($class_names, 'active')) {
+					$class_names = preg_replace('/\bactive\b/', '', $class_names);
+
+					if ( $item->current_item_ancestor
+						|| $item->current_item_parent
+					) {
+						$class_names = trim($class_names . ' has-active');
+					}
+                }
 				$class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
 				$id = $id ? ' id="' . esc_attr($id) . '"' : '';
 				$output .= $indent . '<li' . $id . $value . $class_names .'>';
 			} else {
 				$classes[] = 'dropdown-item';
-				$class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
+				$class_names = join(' ', apply_filters( 'nav_menu_css_class', array_filter($classes), $item, $args) );
 				$atts['class'] = $class_names;
 				$atts['id'] = $id;
 			}
 
-			if ( in_array( 'current-menu-item', $classes) ) {
+			if ( $item->current ) {
 				$atts['class'] = trim(($atts['class'] ?? '') . ' active');
 			}
 
