@@ -64,7 +64,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param array  $args An array of arguments (@see wp_nav_menu()).
 	 * @param int    $current_object_id Current item ID.
 	 */
-	public function start_el( string &$output, object $object, int $depth = 0, array $args = [], int $current_object_id ) : void {
+	public function start_el( string &$output, object $object, int $depth = 0, $args = [], int $current_object_id = 0 ) : void {
 		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 
 		/**
@@ -191,7 +191,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param int    $depth Depth of menu item. Used for padding.
 	 * @param array  $args An array of arguments (@see wp_nav_menu()).
 	 */
-	public function end_el( string &$output, object $object, int $depth, array $args = [] ) : void {
+	public function end_el( string &$output, object $object, int $depth, $args = [] ) : void {
 		if ( 1 === $depth ) {
 			if ( 0 === strcasecmp( $object->attr_title, 'divider' )
 				|| 0 === strcasecmp( $object->title, 'divider' )
