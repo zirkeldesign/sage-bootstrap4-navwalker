@@ -1,6 +1,4 @@
 <?php
-namespace Zirkeldesign\Bootstrap4NavWalker;
-
 /**
  * Class Name: Walker_Nav_Menu_BS4
  * GitHub URI: https://github.com/zirkeldesign/zd-wp-sage-bootstrap4-navwalker
@@ -11,25 +9,29 @@ namespace Zirkeldesign\Bootstrap4NavWalker;
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-if (class_exists('\Walker_Nav_Menu')) {
+namespace Zirkeldesign\Bootstrap4NavWalker;
+
+if ( ! class_exists( '\Walker_Nav_Menu' ) ) {
 	return;
 }
 
 /**
  * Class: Walker_Nav_Menu
  */
-class Walker_Nav_Menu extends \Walker_Nav_Menu
-{
+class Walker_Nav_Menu extends \Walker_Nav_Menu {
+
 	/**
+	 * Start the level output.
+	 *
 	 * @see Walker::start_lvl()
 	 * @since 3.0.0
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param int $depth Depth of page. Used for padding.
+	 * @param int    $depth  Depth of page. Used for padding.
+	 * @param array  $args   Array with arguments.
 	 */
-	public function start_lvl(&$output, $depth = 0, $args = array())
-	{
-		$indent  = str_repeat("\t", $depth);
+	public function start_lvl( string &$output, int $depth = 0, array $args = [] ) : void {
+		$indent  = str_repeat( "\t", $depth );
 		$output .= PHP_EOL . "$indent<div role=\"menu\" class=\" dropdown-menu\">" . PHP_EOL;
 	}
 
@@ -42,11 +44,10 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param int    $depth  Depth of menu item. Used for padding.
-	 * @param array  $args   An array of arguments. @see wp_nav_menu()
+	 * @param array  $args   An array of arguments (@see wp_nav_menu()).
 	 */
-	public function end_lvl(&$output, $depth = 0, $args = array())
-	{
-		$indent = str_repeat("\t", $depth);
+	public function end_lvl( string &$output, int $depth = 0, array $args = [] ) : void {
+		$indent  = str_repeat( "\t", $depth );
 		$output .= "$indent</div>" . PHP_EOL;
 	}
 
@@ -58,39 +59,14 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 	 * @since 3.0.0
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $item   Menu item data object.
-	 * @param int    $depth  Depth of menu item. Used for padding.
-	 * @param array  $args   An array of arguments. @see wp_nav_menu()
-	 * @param int    $id     Current item ID.
+	 * @param object $object Menu item data object.
+	 * @param int    $depth Depth of menu item. Used for padding.
+	 * @param array  $args An array of arguments (@see wp_nav_menu()).
+	 * @param int    $current_object_id Current item ID.
 	 */
-	public function end_el(&$output, $item, $depth = 0, $args = array())
-	{
-		if ($depth === 1) {
-			if (0 === strcasecmp($item->attr_title, 'divider')
-				|| 0 ===strcasecmp($item->title, 'divider')
-			) {
-				$output .= '</div>';
-			} elseif (false !== stripos($item->attr_title, 'header')) {
-				$output .= '</h6>';
-			}
-		} else {
-			$output .= '</li>';
-		}
-	}
+	public function start_el( string &$output, object $object, int $depth = 0, array $args = [], int $current_object_id ) : void {
+		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 
-	/**
-	 * @see Walker::start_el()
-	 * @since 3.0.0
-	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $item Menu item data object.
-	 * @param int $depth Depth of menu item. Used for padding.
-	 * @param int $current_page Menu item ID.
-	 * @param object $args
-	 */
-	public function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0)
-	{
-		$indent = ($depth) ? str_repeat("\t", $depth) : '';
 		/**
 		 * Dividers, Headers or Disabled
 		 * =============================
@@ -99,68 +75,70 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 		 * comparison that is not case sensitive. The strcasecmp() function returns
 		 * a 0 if the strings are equal.
 		 */
-		//( strcasecmp($item->attr_title, 'disabled' ) == 0 )
-
-		if ($depth === 1
+		if ( 1 === $depth
 			&& (
-				0 === strcasecmp($item->attr_title, 'divider')
-				|| 0 === strcasecmp($item->title, 'divider')
+				0 === strcasecmp( $object->attr_title, 'divider' )
+				|| 0 === strcasecmp( $object->title, 'divider' )
 			)
 		) {
 			$output .= $indent . '<div class="dropdown-divider">';
-		} elseif ($depth === 1
-			&& false !== stripos($item->attr_title, 'header')
+		} elseif ( 1 === $depth
+			&& false !== stripos( $object->attr_title, 'header' )
 		) {
-			$output .= $indent . '<h6 class="dropdown-header">' . esc_attr($item->title);
+			$output .= $indent . '<h6 class="dropdown-header">' . esc_attr( $object->title );
 		} else {
-			$class_names = $value = '';
-			$classes = empty($item->classes) ? [] : (array) $item->classes;
+			$class_names = '';
+			$value = '';
+			$classes = empty( $object->classes ) ? [] : (array) $object->classes;
 
 			$atts = [];
-			$atts['title']  = ! empty($item->title)	? $item->title : '';
-			$atts['target'] = ! empty($item->target) ? $item->target : '';
-			$atts['rel']    = ! empty($item->xfn) ? $item->xfn : '';
-			$atts['href']   = ! empty($item->url) ? $item->url : '';
-			$id = apply_filters('nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args);
 
-			if ( $depth === 0 ) {
+			$atts['title']  = ! empty( $object->title ) ? $object->title : '';
+			$atts['target'] = ! empty( $object->target ) ? $object->target : '';
+			$atts['rel']    = ! empty( $object->xfn ) ? $object->xfn : '';
+			$atts['href']   = ! empty( $object->url ) ? $object->url : '';
+			$id = apply_filters( 'nav_menu_item_id', 'menu-item-' . $object->ID, $object, $args );
+
+			if ( 0 === $depth ) {
 				$classes[] = 'nav-item';
-				$classes[] = 'nav-item-' . $item->ID;
+				$classes[] = 'nav-item-' . $object->ID;
+
 				$atts['class'] = 'nav-link';
+
 				if ( $args->has_children ) {
 					$classes[] = ' dropdown';
-					$atts['href']          = ! empty($item->url) ? $item->url : '';
+					$atts['href']          = ! empty( $object->url ) ? $object->url : '';
 					$atts['data-hover']    = 'show';
-					$atts['data-target']  = '.dropdown';
+					$atts['data-target']   = '.dropdown';
 					$atts['class']         = 'dropdown-toggle nav-link';
 					$atts['role']          = 'button';
 					$atts['aria-haspopup'] = 'true';
 				}
-				$class_names = join(' ', apply_filters( 'nav_menu_css_class', array_filter($classes), $item, $args) );
-                if (false !== strpos($class_names, 'active')) {
-					$class_names = preg_replace('/\bactive\b/', '', $class_names);
+				$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $object, $args ) );
+				if ( false !== strpos( $class_names, 'active' ) ) {
+					$class_names = preg_replace( '/\bactive\b/', '', $class_names );
 
-					if ( $item->current_item_ancestor
-						|| $item->current_item_parent
+					if ( $object->current_item_ancestor
+						|| $object->current_item_parent
 					) {
-						$class_names = trim($class_names . ' has-active');
+						$class_names = trim( $class_names . ' has-active' );
 					}
-                }
-				$class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
-				$id = $id ? ' id="' . esc_attr($id) . '"' : '';
-				$output .= $indent . '<li' . $id . $value . $class_names .'>';
+				}
+				$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+				$id = $id ? ' id="' . esc_attr( $id ) . '"' : '';
+				$output .= $indent . '<li' . $id . $value . $class_names . '>';
 			} else {
-				$classes[] = 'dropdown-item';
-				$class_names = join(' ', apply_filters( 'nav_menu_css_class', array_filter($classes), $item, $args) );
+				$classes[]     = 'dropdown-item';
+				$class_names   = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $object, $args ) );
 				$atts['class'] = $class_names;
-				$atts['id'] = $id;
+				$atts['id']    = $id;
 			}
 
-			if ( $item->current ) {
-				$atts['class'] = trim(($atts['class'] ?? '') . ' active');
+			if ( $object->current ) {
+				$atts['class'] = trim( ( $atts['class'] ?? '' ) . ' active' );
 			}
 
-			$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );
+			$atts = apply_filters( 'nav_menu_link_attributes', $atts, $object, $args );
 			$attributes = '';
 			foreach ( $atts as $attr => $value ) {
 				if ( ! empty( $value ) ) {
@@ -180,8 +158,8 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 			);
 			$classes = array_unique( array_filter( $classes ) );
 
-			$item_output  = $args->before;
-			$item_output .= '<a' . $attributes . '>';
+			$object_output  = $args->before;
+			$object_output .= '<a' . $attributes . '>';
 
 			/**
 			 * Icons
@@ -190,14 +168,40 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 			 * if there is a value in the attr_title property. If the attr_title
 			 * property is NOT null we apply it as the class name for the icon
 			 */
-			if (! empty($item->attr_title)) {
-				$item_output .= '<span class="' . esc_attr($item->attr_title) . '"></span>&nbsp;';
+			if ( ! empty( $object->attr_title ) ) {
+				$object_output .= '<span class="' . esc_attr( $object->attr_title ) . '"></span>&nbsp;';
 			}
-			$item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
-			$item_output .= '</a>';
-			$item_output .= $args->after;
+			$object_output .= $args->link_before . apply_filters( 'the_title', $object->title, $object->ID ) . $args->link_after;
+			$object_output .= '</a>';
+			$object_output .= $args->after;
 
-			$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+			$output .= apply_filters( 'walker_nav_menu_start_el', $object_output, $object, $depth, $args );
+		}
+	}
+
+	/**
+	 * Ends the element output, if needed.
+	 *
+	 * @see Walker::end_el()
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $output Passed by reference. Used to append additional content.
+	 * @param object $object Menu item data object.
+	 * @param int    $depth Depth of menu item. Used for padding.
+	 * @param array  $args An array of arguments (@see wp_nav_menu()).
+	 */
+	public function end_el( string &$output, object $object, int $depth, array $args = [] ) : void {
+		if ( 1 === $depth ) {
+			if ( 0 === strcasecmp( $object->attr_title, 'divider' )
+				|| 0 === strcasecmp( $object->title, 'divider' )
+			) {
+				$output .= '</div>';
+			} elseif ( false !== stripos( $object->attr_title, 'header' ) ) {
+				$output .= '</h6>';
+			}
+		} else {
+			$output .= '</li>';
 		}
 	}
 
@@ -213,67 +217,72 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu
 	 * @see Walker::start_el()
 	 * @since 2.5.0
 	 *
-	 * @param object $element Data object
-	 * @param array $children_elements List of elements to continue traversing.
-	 * @param int $max_depth Max depth to traverse.
-	 * @param int $depth Depth of current element.
-	 * @param array $args
+	 * @param object $element Data object.
+	 * @param array  $children_elements List of elements to continue traversing.
+	 * @param int    $max_depth Max depth to traverse.
+	 * @param int    $depth Depth of current element.
+	 * @param array  $args An array of arguments.
 	 * @param string $output Passed by reference. Used to append additional content.
-	 * @return null Null on failure with no changes to parameters.
 	 */
-	public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output)
-	{
-		if (! $element) {
+	public function display_element( object $element, array &$children_elements, int $max_depth, int $depth, array $args, string &$output ) : void {
+		if ( ! $element ) {
 			return;
 		}
 		$id_field = $this->db_fields['id'];
 		// Display this element.
-		if (is_object($args[0])) {
-			$args[0]->has_children = ! empty($children_elements[ $element->$id_field ]);
+		if ( is_object( $args[0] ) ) {
+			$args[0]->has_children = ! empty( $children_elements[ $element->$id_field ] );
 		}
-		parent::display_element($element, $children_elements, $max_depth, $depth, $args, $output);
+		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 
 	/**
 	 * Menu Fallback
 	 * =============
 	 * If this function is assigned to the wp_nav_menu's fallback_cb variable
-	 * and a manu has not been assigned to the theme location in the WordPress
+	 * and a menu has not been assigned to the theme location in the WordPress
 	 * menu manager the function with display nothing to a non-logged in user,
 	 * and will add a link to the WordPress menu manager if logged in as an admin.
 	 *
 	 * @param array $args passed from the wp_nav_menu function.
-	 *
 	 */
-	public static function fallback($args)
-	{
-		if (current_user_can('manage_options')) {
-			extract($args);
-			$fb_output = null;
-			if ($container) {
-				$fb_output = '<' . $container;
-				if ($container_id) {
-					$fb_output .= ' id="' . $container_id . '"';
-				}
-				if ($container_class) {
-					$fb_output .= ' class="' . $container_class . '"';
-				}
-				$fb_output .= '>';
-			}
-			$fb_output .= '<ul';
-			if ($menu_id) {
-				$fb_output .= ' id="' . $menu_id . '"';
-			}
-			if ($menu_class) {
-				$fb_output .= ' class="' . $menu_class . '"';
-			}
-			$fb_output .= '>';
-			$fb_output .= '<li><a href="' . admin_url('nav-menus.php') . '">' . __('Add a menu'). '</a></li>';
-			$fb_output .= '</ul>';
-			if ($container) {
-				$fb_output .= '</' . $container . '>';
-			}
-			echo $fb_output;
+	public static function fallback( array $args ) : void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
 		}
+
+		$output = null;
+
+		if ( $args['container'] ) {
+			$output = '<' . $args['container'];
+
+			if ( $args['container_id'] ) {
+				$output .= ' id="' . $args['container_id'] . '"';
+			}
+
+			if ( $args['container_class'] ) {
+				$output .= ' class="' . $args['container_class'] . '"';
+			}
+
+			$output .= '>';
+		}
+
+		$output .= '<ul';
+
+		if ( $args['menu_id'] ) {
+			$output .= ' id="' . $args['menu_id'] . '"';
+		}
+		if ( $args['menu_class'] ) {
+			$output .= ' class="' . $args['menu_class'] . '"';
+		}
+
+		$output .= '>';
+		$output .= '<li><a href="' . admin_url( 'nav-menus.php' ) . '">' . __( 'Add a menu' ) . '</a></li>';
+		$output .= '</ul>';
+		if ( $args['container'] ) {
+			$output .= '</' . $args['container'] . '>';
+		}
+
+		echo $output;
 	}
 }
