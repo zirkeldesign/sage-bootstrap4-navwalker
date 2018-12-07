@@ -187,17 +187,17 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @since 3.0.0
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $object Menu item data object.
+	 * @param object $item Menu item data object.
 	 * @param int    $depth Depth of menu item. Used for padding.
 	 * @param array  $args An array of arguments (@see wp_nav_menu()).
 	 */
-	public function end_el( &$output, $object, $depth, $args = [] ) {
+	public function end_el( &$output, $item, $depth, $args = [] ) {
 		if ( 1 === $depth ) {
-			if ( 0 === strcasecmp( $object->attr_title, 'divider' )
-				|| 0 === strcasecmp( $object->title, 'divider' )
+			if ( 0 === strcasecmp( $item->attr_title, 'divider' )
+				|| 0 === strcasecmp( $item->title, 'divider' )
 			) {
 				$output .= '</div>';
-			} elseif ( false !== stripos( $object->attr_title, 'header' ) ) {
+			} elseif ( false !== stripos( $item->attr_title, 'header' ) ) {
 				$output .= '</h6>';
 			}
 		} else {
