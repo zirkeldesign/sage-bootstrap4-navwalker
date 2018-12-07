@@ -30,7 +30,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param int    $depth  Depth of page. Used for padding.
 	 * @param array  $args   Array with arguments.
 	 */
-	public function start_lvl( string &$output, int $depth = 0, array $args = [] ) : void {
+	public function start_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent  = str_repeat( "\t", $depth );
 		$output .= PHP_EOL . "$indent<div role=\"menu\" class=\" dropdown-menu\">" . PHP_EOL;
 	}
@@ -46,7 +46,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param int    $depth  Depth of menu item. Used for padding.
 	 * @param array  $args   An array of arguments (@see wp_nav_menu()).
 	 */
-	public function end_lvl( string &$output, int $depth = 0, array $args = [] ) : void {
+	public function end_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent  = str_repeat( "\t", $depth );
 		$output .= "$indent</div>" . PHP_EOL;
 	}
@@ -64,7 +64,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param array  $args An array of arguments (@see wp_nav_menu()).
 	 * @param int    $current_object_id Current item ID.
 	 */
-	public function start_el( string &$output, object $object, int $depth = 0, $args = [], int $current_object_id = 0 ) : void {
+	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 
 		/**
@@ -191,7 +191,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param int    $depth Depth of menu item. Used for padding.
 	 * @param array  $args An array of arguments (@see wp_nav_menu()).
 	 */
-	public function end_el( string &$output, object $object, int $depth, $args = [] ) : void {
+	public function end_el( &$output, $object, $depth, $args = [] ) {
 		if ( 1 === $depth ) {
 			if ( 0 === strcasecmp( $object->attr_title, 'divider' )
 				|| 0 === strcasecmp( $object->title, 'divider' )
@@ -224,7 +224,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param array  $args An array of arguments.
 	 * @param string $output Passed by reference. Used to append additional content.
 	 */
-	public function display_element( object $element, array &$children_elements, int $max_depth, int $depth, array $args, string &$output ) : void {
+	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		if ( ! $element ) {
 			return;
 		}
@@ -246,7 +246,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 *
 	 * @param array $args passed from the wp_nav_menu function.
 	 */
-	public static function fallback( array $args ) : void {
+	public static function fallback( $args ) {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
