@@ -191,7 +191,7 @@ class Walker_Nav_Menu extends \Walker_Nav_Menu {
 	 * @param int    $depth Depth of menu item. Used for padding.
 	 * @param array  $args An array of arguments (@see wp_nav_menu()).
 	 */
-	public function end_el( &$output, $item, $depth, $args = [] ) {
+	public function end_el( &$output, $item, $depth = 0, $args = [] ) {
 		if ( 1 === $depth ) {
 			if ( 0 === strcasecmp( $item->attr_title, 'divider' )
 				|| 0 === strcasecmp( $item->title, 'divider' )
